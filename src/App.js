@@ -34,9 +34,13 @@ const App = (props) => {
 		setCourse(props.course);
 	}
 
+	const Initial = () => {
+		return <div className='initial'>{props.course} рублей равно:</div>;
+	};
+
 	return (
 		<div className='app'>
-			<div className='initial'>{props.course} рублей равно:</div>
+			{course !== props.course ? <Initial /> : null}
 			<div className='course'>{course}</div>
 			<div className='controls'>
 				<button onClick={() => getCurrCode('USD')}>USD</button>
