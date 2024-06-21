@@ -40,7 +40,11 @@ const App = (props) => {
 
 	return (
 		<div className='app'>
-			{course !== props.course ? <Initial /> : null}
+			{course !== props.course ? (
+				<Initial />
+			) : (
+				<div className='initial'>Введите сумму</div>
+			)}
 			<div className='course'>{course}</div>
 			<div className='controls'>
 				<button onClick={() => getCurrCode('USD')}>USD</button>
