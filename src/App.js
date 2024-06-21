@@ -14,43 +14,43 @@ const getResource = async (currency) => {
 };
 
 const App = (props) => {
-	const [course, setCourse] = useState(props.course);
+	const [amount, setAmount] = useState(props.amount);
 	const [currency, setCurrency] = useState('RUB');
 
 	function setCurrencyCode(newCode) {
-		setCourse(props.course);
 		setCurrency(newCode);
 	}
 
-	function toogleCourse(data, currency) {
-		setCourse(
-			(course) =>
-				`${
-					Math.round((course / data.Valute[currency].Value) * 100) / 100
-				} ${currency}`
-		);
+	function toogleCourse(data) {
+		setAmount((course) => {
+			return (
+				Math.round((props.amount / data.Valute[currency].Value) * 100) / 100
+			);
+		});
 	}
 
 	useEffect(() => {
 		if (currency !== 'RUB') {
 			getResource()
-				.then((res) => toogleCourse(res, currency))
+				.then((res) => toogleCourse(res))
 				.catch((error) => console.error('Ошибка при получении данных:', error));
 		}
 	}, [currency]);
 
 	function resetCourse() {
-		setCourse(props.course);
+		setAmount(props.amount);
 	}
 
 	return (
 		<div className='app'>
-			{course !== props.course ? (
-				<div className='initial'>{props.course} рублей равно:</div>
+			{amount !== props.amount ? (
+				<div className='initial'>{props.amount} рублей равно:</div>
 			) : (
 				<div className='initial'>Введите сумму</div>
 			)}
-			<div className='course'>{course}</div>
+			<div className='course'>
+				{amount} {currency}
+			</div>
 			<div className='controls'>
 				<button onClick={() => setCurrencyCode('USD')}>USD</button>
 				<button onClick={() => setCurrencyCode('EUR')}>EUR</button>
