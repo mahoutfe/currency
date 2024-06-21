@@ -26,7 +26,7 @@ const App = (props) => {
 		setCourse(
 			(course) =>
 				`${
-					Math.round(course * data.Valute[currency].Value * 100) / 100
+					Math.round((course / data.Valute[currency].Value) * 100) / 100
 				} ${currency}`
 		);
 	}
