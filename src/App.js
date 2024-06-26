@@ -1,63 +1,90 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 
-const getResource = async (currency) => {
-	let res = await fetch('https://www.cbr-xml-daily.ru/daily_json.js');
-
-	if (!res.ok) {
-		throw new Error(`HTTP error!, status: ${res.status}`);
-	}
-
-	const data = await res.json();
-
-	return data;
-};
-
-const App = (props) => {
-	const [amount, setAmount] = useState(props.amount);
-	const [currency, setCurrency] = useState('RUB');
-
-	function setCurrencyCode(newCode) {
-		setCurrency(newCode);
-	}
-
-	function toogleCourse(data) {
-		setAmount((course) => {
-			return (
-				Math.round((props.amount / data.Valute[currency].Value) * 100) / 100
-			);
-		});
-	}
+function useCounter() {
+	const [counter, setCounter] = useState(null);
+	const [initialCounter, setinitialCounter] = useState(null);
 
 	useEffect(() => {
-		if (currency !== 'RUB') {
-			getResource()
-				.then((res) => toogleCourse(res))
-				.catch((error) => console.error('Ошибка при получении данных:', error));
-		}
-	}, [currency]);
+		const fetchData = async () => {
+			const response = await fetch(
+				'https://www.random.org/integers/?num=1&min=-50&max=50&col=1&base=10&format=plain&rnd=new'
+			);
+			const data = await response.json();
+			setCounter(data);
+			setinitialCounter(data);
+		};
+		fetchData();
+	}, []);
 
-	function resetCourse() {
-		setAmount(props.amount);
-	}
+	const incCounter = () => {
+		if (counter < 50) {
+			setCounter((counter) => counter + 1);
+		}
+	};
+
+	const decCounter = () => {
+		if (counter > -50) {
+			setCounter((counter) => counter - 1);
+		}
+	};
+
+	const rndCounter = () => {
+		setCounter(+(Math.random() * (50 - -50) + -50).toFixed(0));
+	};
+
+	const resetCounter = () => {
+		setCounter(initialCounter);
+	};
+
+	return {
+		counter,
+		initialCounter,
+		incCounter,
+		decCounter,
+		rndCounter,
+		resetCounter,
+	};
+}
+
+const Counter = () => {
+	const topCounter = useCounter();
 
 	return (
-		<div className='app'>
-			{amount !== props.amount ? (
-				<div className='initial'>{props.amount} рублей равно:</div>
-			) : (
-				<div className='initial'>Введите сумму</div>
-			)}
-			<div className='course'>
-				{amount} {currency}
-			</div>
+		<div className='component'>
+			<div className='counter'>{topCounter.counter}</div>
 			<div className='controls'>
-				<button onClick={() => setCurrencyCode('USD')}>USD</button>
-				<button onClick={() => setCurrencyCode('EUR')}>EUR</button>
-				<button onClick={() => setCurrencyCode('GBP')}>GBP</button>
-				<button onClick={() => resetCourse()}>RESET</button>
+				<button onClick={topCounter.incCounter}>INC</button>
+				<button onClick={topCounter.decCounter}>DEC</button>
+				<button onClick={topCounter.rndCounter}>RND</button>
+				<button onClick={topCounter.resetCounter}>RESET</button>
 			</div>
 		</div>
+	);
+};
+
+const RndCounter = () => {
+	const lowerCounter = useCounter();
+
+	return (
+		<div className='component'>
+			<div className='counter'>{lowerCounter.counter}</div>
+			<div className='controls'>
+				<button onClick={lowerCounter.incCounter}>INC</button>
+				<button onClick={lowerCounter.decCounter}>DEC</button>
+				<button onClick={lowerCounter.rndCounter}>RND</button>
+				<button onClick={lowerCounter.resetCounter}>RESET</button>
+			</div>
+		</div>
+	);
+};
+
+const App = () => {
+	return (
+		<>
+			<Counter />
+			<RndCounter />
+		</>
 	);
 };
 
