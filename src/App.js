@@ -3,7 +3,7 @@ import './App.css';
 
 function useCounter() {
 	const [counter, setCounter] = useState(null);
-	const [initialCounter, setinitialCounter] = useState(null);
+	const [initialCounter, setInitialCounter] = useState(null);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -12,7 +12,7 @@ function useCounter() {
 			);
 			const data = await response.json();
 			setCounter(data);
-			setinitialCounter(data);
+			setInitialCounter(data);
 		};
 		fetchData();
 	}, []);
